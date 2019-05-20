@@ -1,0 +1,73 @@
+system {
+    login {
+        user admin {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$5$.qqN6XC7$KdAopYRCfnq6xTMfTr3WfKq0vvHpW/zAHZaS68gsg38"; ## SECRET-DATA
+            }
+        }
+    }
+    root-authentication {
+        encrypted-password "$5$JqaP/GaY$wihdUiPgZFWiwQcNAcsLyivWxAiWLGwhG5ztLwTXRW2"; ## SECRET-DATA
+    }
+    services {
+        ssh {
+            root-login deny-password;
+            protocol-version v2;
+        }
+        netconf {
+            ssh;
+        }
+    }
+    host-name {{ host }};
+    auto-snapshot;
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+        {% for syslog_server in syslog_servers %}
+        host {{ syslog_server.host }} {
+            any info;
+            interactive-commands any;
+            facility-override local5;
+        }
+        {% endfor %} 
+    }
+    processes {
+        dhcp-service {
+            traceoptions {
+                file dhcp_logfile size 10m;
+                level all;
+                flag all;
+            }
+        }
+    }
+    ntp { {% for ntp_server in ntp_servers %}
+	server {{ ntp_server.host }}; 
+        {% endfor %}
+   }
+}
+protocols {
+    lldp {
+        interface all;
+    }
+    lldp-med {
+        interface all;
+    }
+    igmp-snooping {
+        vlan default;
+    }
+    rstp {
+        {% for intf in access_auto %}
+        {{ intf.ifname }};
+        {% endfor %} 
+    }
+}

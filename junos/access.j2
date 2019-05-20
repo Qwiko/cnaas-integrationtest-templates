@@ -1,0 +1,62 @@
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 2;
+        }
+    }
+}
+routing-options {
+   static {
+      route 0.0.0.0/0 next-hop {{ mgmt_gw }};
+   }
+}
+vlans {
+    cn-mgmt {
+        vlan-id {{ mgmt_vlan_id }};
+        l3-interface irb.0;
+    }
+}
+interfaces {
+    {% for intf in uplinks %}
+    {{ intf.ifname }} {
+        description "Uplink-phy"
+        ether-options {
+           802.3ad ae0; 
+        }
+    }
+    {% endfor %}
+    ae0 {
+        description "Uplink"
+        flexible-vlan-tagging;
+        aggregated-ether-options {
+            lacp {
+                active;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members all;
+                }
+            }
+        }
+    }
+    irb {
+        unit 0 {
+            family inet {
+                address {{ mgmt_ip }};
+            }
+        }
+    }
+    # Access ports
+    {% for intf in access_auto %}
+    {{ intf.ifname }} {
+        unit 0 {
+            family ethernet-switching {
+                storm-control default;
+            }
+        }
+    }
+    {% endfor %}
+}
