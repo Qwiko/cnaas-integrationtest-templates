@@ -1,0 +1,126 @@
+system {
+    auto-snapshot;
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+    commit {
+        factory-settings {
+            reset-virtual-chassis-configuration;
+            reset-chassis-lcd-menu;
+        }
+    }
+    processes {
+        dhcp-service {
+            traceoptions {
+                file dhcp_logfile size 10m;
+                level all;
+                flag all;
+            }
+        }
+    }
+    root-authentication {
+        encrypted-password "$5$JqaP/GaY$wihdUiPgZFWiwQcNAcsLyivWxAiWLGwhG5ztLwTXRW2"; ## SECRET-DATA
+    }
+    login {
+        user admin {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$5$.qqN6XC7$KdAopYRCfnq6xTMfTr3WfKq0vvHpW/zAHZaS68gsg38"; ## SECRET-DATA
+            }
+        }
+    }
+    services {
+        ssh {
+            root-login deny-password;
+            protocol-version v2;
+        }
+        netconf {
+            ssh;
+        }
+    }
+}
+
+chassis {
+    redundancy {
+        graceful-switchover;
+    }
+    auto-image-upgrade;
+}
+interfaces {
+    xe-0/1/0 {
+        unit 0 {
+            family ethernet-switching {
+                storm-control default;
+            }
+        }
+    }
+    xe-0/1/1 {
+        unit 0 {
+            family ethernet-switching {
+                storm-control default;
+            }
+        }
+    }
+    xe-0/1/2 {
+        unit 0 {
+            family ethernet-switching {
+                storm-control default;
+            }
+        }
+    }
+    xe-0/1/3 {
+        unit 0 {
+            family ethernet-switching {
+                storm-control default;
+            }
+        }
+    }
+    irb {
+        unit 0 {
+            family inet {
+                dhcp {
+                    vendor-id Juniper-ex2300-48p;
+                }
+            }
+        }
+    }
+}
+forwarding-options {
+    storm-control-profiles default {
+        all;
+    }
+}
+protocols {
+    lldp {
+        interface all;
+    }
+    lldp-med {
+        interface all;
+    }
+    igmp-snooping {
+        vlan default;
+    }
+    rstp {
+        interface all;
+    }
+}
+vlans {
+    default {
+        vlan-id 1;
+        l3-interface irb.0;
+    }
+}
+poe {
+    interface all;
+}
+
