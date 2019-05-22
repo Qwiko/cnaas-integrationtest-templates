@@ -71,3 +71,16 @@ protocols {
         {% endfor %} 
     }
 }
+{% block interfaces %}
+{% endblock %}
+routing-options {
+   static {
+      route 0.0.0.0/0 next-hop {{ mgmt_gw }};
+   }
+}
+vlans {
+    cn-mgmt {
+        vlan-id {{ mgmt_vlan_id }};
+        l3-interface irb.0;
+    }
+}
