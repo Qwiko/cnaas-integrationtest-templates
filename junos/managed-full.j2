@@ -33,13 +33,6 @@ system {
         file interactive-commands {
             interactive-commands any;
         }
-#        {# % for syslog_server in syslog_servers %}
-#        host {{ syslog_server.host }} {
-#            any info;
-#            interactive-commands any;
-#            facility-override local5;
-#        }
-#        {% endfor % #}
     }
     processes {
         dhcp-service {
@@ -66,9 +59,7 @@ protocols {
         vlan default;
     }
     rstp {
-        {% for intf in access_auto %}
-        {{ intf.ifname }};
-        {% endfor %} 
+        interface all;
     }
 }
 {% block interfaces %}
