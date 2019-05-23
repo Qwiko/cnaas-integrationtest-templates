@@ -64,6 +64,7 @@ access {
             authentication-server {{ radius_server.host }};
             {% endfor %}
         }
+    }
 }
 protocols {
     dot1x {
