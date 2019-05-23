@@ -50,30 +50,24 @@ interfaces {
     }
     {% endfor %}
 }
-{% for radius_server in radius_servers %}
 access {
     radius-server {
+        {% for radius_server in radius_servers %}
         {{ radius_server.host }} secret "testing";
         {{ radius_server.host }} source-address {{ mgmt_ip }};
+        {% endfor %}
     }
-    profile prof1 {
-        radius {
-            authentication-server {{ radius_server.host }};
-        }
-{% endfor %}
-
-access {
     profile prof1 {
         authentication-order radius;
-    }
+        radius {
+            {% for radius_server in radius_servers %}
+            authentication-server {{ radius_server.host }};
+            {% endfor %}
+        }
 }
 protocols {
     dot1x {
         authenticator authentication-profile-name prof1;
-    }
-}
-protocols {
-    dot1x {
         interface {
             {% for intf in access_auto %}
             {{ intf.ifname }}.0 {
