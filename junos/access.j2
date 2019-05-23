@@ -72,18 +72,16 @@ protocols {
         authenticator authentication-profile-name prof1;
     }
 }
-{% for intf in access_auto %}
 protocols {
     dot1x {
         interface {
+            {% for intf in access_auto %}
             {{ intf.ifname }}.0 {
                 supplicant single;
+            {% endfor %}
         }
     }
 }
-{% endfor %}
-
-
 vlans {
    int {
         vlan-id 123;
