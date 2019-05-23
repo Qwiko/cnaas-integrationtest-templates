@@ -50,21 +50,41 @@ interfaces {
     }
     {% endfor %}
 }
-
 {% for radius_server in radius_servers %}
-set access radius-server {{ radius_server.host }} secret "testing"
-set access radius-server {{ radius_server.host }} source-address {{ mgmt_ip }}
-set access profile prof1 radius authentication-server {{ radius_server.host }}
+access {
+    radius-server {
+        {{ radius_server.host }} secret "testing";
+        {{ radius_server.host }} source-address {{ mgmt_ip }};
+    }
+    profile prof1 {
+        radius {
+            authentication-server {{ radius_server.host }};
+        }
 {% endfor %}
 
-set access profile prof1 authentication-order radius
-
-set protocols dot1x authenticator authentication-profile-name prof1
-
+access {
+    profile prof1 {
+        authentication-order radius;
+    }
+}
 {% for intf in access_auto %}
-set protocols dot1x authenticator interface {{ intf.ifname }}.0 supplicant single
+protocols {
+    dot1x {
+        authenticator authentication-profile-name prof1;
+        interface {
+            {{ intf.ifname }}.0 {
+                supplicant single;
+        }
+    }
+}
 {% endfor %}
 
-set vlans int vlan-id 123
-set vlans ext vlan-id 321
+vlans {
+   int {
+        vlan-id 123;
+    }
+    ext {
+        vlan-id 321;
+    }
+}
 {% endblock %}
