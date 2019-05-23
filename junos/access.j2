@@ -71,7 +71,7 @@ protocols {
        authenticator {
            authentication-profile-name prof1;
            interface {
-{% for intf in uplinks %}
+{% for intf in access_auto %}
             {{ intf.ifname }} {
                 supplicant single;
                }
