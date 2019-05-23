@@ -67,10 +67,14 @@ access {
         authentication-order radius;
     }
 }
-{% for intf in access_auto %}
 protocols {
     dot1x {
         authenticator authentication-profile-name prof1;
+    }
+}
+{% for intf in access_auto %}
+protocols {
+    dot1x {
         interface {
             {{ intf.ifname }}.0 {
                 supplicant single;
@@ -78,6 +82,7 @@ protocols {
     }
 }
 {% endfor %}
+
 
 vlans {
    int {
