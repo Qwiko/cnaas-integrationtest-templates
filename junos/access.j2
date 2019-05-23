@@ -67,12 +67,14 @@ access {
 }
 protocols {
     dot1x {
-        authenticator authentication-profile-name prof1;
-        interface {
-            {% for intf in access_auto %}
-            {{ intf.ifname }}.0 {
-                supplicant single;
-            {% endfor %}
+        authenticator {
+            authentication-profile-name prof1;
+            interface {
+                {% for intf in access_auto %}
+                {{ intf.ifname }}.0 {
+                    supplicant single;
+                {% endfor %}
+                }
             }
         }
     }
