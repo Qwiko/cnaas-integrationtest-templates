@@ -5,11 +5,8 @@ management api http-commands
 username admin privilege 15 secret abc123abc123
 {% block interfaces %}
 {% endblock %}
-vlan {{ mgmt_vlan_id }}
-interface vlan {{ mgmt_vlan_id }}
- no shutdown
- ip address {{ mgmt_ip }}/{{ mgmt_prefixlen }}
-ip route 0.0.0.0 0.0.0.0 {{ mgmt_gw }}
+{% block management %}
+{% endblock %}
 {% for ntp_server in ntp_servers %}
 ntp server {{ ntp_server.host }}
 {% endfor %}

@@ -8,3 +8,8 @@ interface {{ intf.ifname }}
  description DOWNLINK
 {% endfor %}
 {% endblock %}
+{% block management %}
+interface lo1
+ no shutdown
+ ip address {{ mgmt_ip }}/{{ mgmt_prefixlen }}
+{% endblock %}

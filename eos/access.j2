@@ -17,3 +17,10 @@ interface {{ intf.ifname }}
 interface port-channel 1
  description UPLINK
 {% endblock %}
+{% block management %}
+vlan {{ mgmt_vlan_id }}
+interface vlan {{ mgmt_vlan_id }}
+ no shutdown
+ ip address {{ mgmt_ip }}/{{ mgmt_prefixlen }}
+ip route 0.0.0.0 0.0.0.0 {{ mgmt_gw }}
+{% endblock %}
