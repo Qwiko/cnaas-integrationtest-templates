@@ -1,0 +1,10 @@
+{% extends "managed-full.j2" %}
+{% block interfaces %}
+{% for intf in downlinks %}
+interface {{ intf.ifname }}
+ switchport
+ switchport mode trunk
+ channel-group 1 mode active
+ description DOWNLINK
+{% endfor %}
+{% endblock %}
