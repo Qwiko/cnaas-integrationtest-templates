@@ -12,4 +12,9 @@ interface {{ intf.ifname }}
 interface lo1
  no shutdown
  ip address {{ mgmt_ip }}/{{ mgmt_prefixlen }}
+{% for mgmtdom in mgmtdomains %}
+vlan {{ mgmtdom.vlan }}
+interface Vlan{{ mgmtdom.vlan }}
+ ip address {{ mgmtdom.ipv4_gw }}
+{% endfor %}
 {% endblock %}
