@@ -7,6 +7,10 @@ interface {{ intf.ifname }}
  channel-group 1 mode active
  description DOWNLINK
 {% endfor %}
+{% for intf in custom_interfaces %}
+interface {{ intf.ifname }}
+ {{ intf.config }}
+{% endfor %}
 {% endblock %}
 {% block management %}
 interface lo1
