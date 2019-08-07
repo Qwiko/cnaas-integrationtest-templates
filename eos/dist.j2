@@ -22,3 +22,8 @@ interface Vlan{{ mgmtdom.vlan }}
  ip address {{ mgmtdom.ipv4_gw }}
 {% endfor %}
 {% endblock %}
+{% block routing %}
+{% for vrf in vrfs %}
+vrf {{ vrf.name }}
+{% endfor %}
+{% endblock %}

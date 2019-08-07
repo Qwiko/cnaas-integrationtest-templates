@@ -10,3 +10,5 @@ username admin privilege 15 secret abc123abc123
 {% for ntp_server in ntp_servers %}
 ntp server {{ ntp_server.host }}
 {% endfor %}
+{% block routing %}
+{% endblock %}
