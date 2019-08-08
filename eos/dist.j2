@@ -26,6 +26,5 @@ interface Vlan{{ mgmtdom.vlan }}
 ip routing
 {% for vrf in vrfs %}
 vrf definition {{ vrf.name }}
- address-family ipv4
 {% endfor %}
 {% endblock %}
