@@ -9,6 +9,8 @@ interface {{ intf.name }}
  description DOWNLINK
 interface Port-channel {{ intf.indexnum }}
  description DOWNLINK
+ port-channel lacp fallback individual
+ port-channel lacp fallback timeout 3
 {% elif intf.ifclass == 'custom' %}
  {{ intf.config }}
 {% endif %}
