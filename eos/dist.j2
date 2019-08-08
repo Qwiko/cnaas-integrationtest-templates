@@ -1,11 +1,13 @@
 {% extends "managed-full.j2" %}
 {% block interfaces %}
 {% for intf in interfaces %}
-interface {{ intf.ifname }}
+interface {{ intf.name }}
 {% if intf.ifclass == 'downlink' %}
  switchport
  switchport mode trunk
- channel-group 1 mode active
+ channel-group {{ intf.indexnum }} mode active
+ description DOWNLINK
+interface Port-channel {{ intf.indexnum }}
  description DOWNLINK
 {% elif intf.ifclass == 'custom' %}
  {{ intf.config }}
