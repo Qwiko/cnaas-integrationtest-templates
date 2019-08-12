@@ -49,11 +49,7 @@ system {
    }
 }
 snmp {
-    community public {
-        clients { {% for nav_server in nav_servers %}
-            {{ nav_server.host }};
-    {%- endfor %}
-        }
+    community public;
     }
 }
 protocols {
