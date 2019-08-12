@@ -45,8 +45,16 @@ system {
     }
     ntp { {% for ntp_server in ntp_servers %}
 	server {{ ntp_server.host }}; 
-        {% endfor %}
+        {%- endfor %}
    }
+}
+snmp {
+    community public {
+        clients { {% for nav_server in nav_servers %}
+            {{ nav_server.host }};
+    {%- endfor %}
+        }
+    }
 }
 protocols {
     lldp {
