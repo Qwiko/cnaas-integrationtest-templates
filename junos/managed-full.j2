@@ -48,6 +48,9 @@ system {
         {%- endfor %}
    }
 }
+snmp {
+   community public;
+}
 protocols {
     lldp {
         interface all;
