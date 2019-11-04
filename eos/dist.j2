@@ -1,34 +1,64 @@
-{% extends "managed-full.j2" %}
+{% extends "managed-full-vrf.j2" %}
 {% block interfaces %}
 {% for intf in interfaces %}
 interface {{ intf.name }}
 {% if intf.ifclass == 'downlink' %}
+ description DOWNLINK
  switchport
  switchport mode trunk
  channel-group {{ intf.indexnum }} mode active
- description DOWNLINK
 interface Port-channel {{ intf.indexnum }}
  description DOWNLINK
  port-channel lacp fallback individual
  port-channel lacp fallback timeout 3
+{% elif intf.ifclass == 'fabric' %}
+ description {{ intf.peer_hostname }}
+ no switchport
+ ip address {{ intf.ipv4if }}
 {% elif intf.ifclass == 'custom' %}
  {{ intf.config }}
 {% endif %}
 {% endfor %}
-{% endblock %}
-{% block management %}
-interface lo1
- no shutdown
- ip address {{ mgmt_ip }}/{{ mgmt_prefixlen }}
 {% for mgmtdom in mgmtdomains %}
 vlan {{ mgmtdom.vlan }}
 interface Vlan{{ mgmtdom.vlan }}
  ip address {{ mgmtdom.ipv4_gw }}
 {% endfor %}
+interface Vlan1
+ description ZTP DHCP
+ ip address 192.168.0.1/24
+ ip helper-address 10.100.2.2
+ no shutdown
 {% endblock %}
 {% block routing %}
+service routing protocols model multi-agent
 ip routing
 {% for vrf in vrfs %}
 vrf definition {{ vrf.name }}
+ip routing vrf {{ vrf.name }}
 {% endfor %}
+router bgp {{ asn }}
+ router-id {{ infra_ip }}
+ no bgp default ipv4-unicast
+ {% for nei in bgp_ipv4_peers %}
+ neighbor {{ nei.peer_ip }} remote-as {{ nei.peer_asn }}
+ neighbor {{ nei.peer_ip }} description {{ nei.peer_hostname }}
+ {% endfor %}
+ {% for nei in bgp_evpn_peers %}
+ neighbor {{ nei.peer_infra_lo }} remote-as {{ nei.peer_asn }}
+ neighbor {{ nei.peer_infra_lo }} description {{ nei.peer_hostname }}
+ neighbor {{ nei.peer_infra_lo }} update-source Loopback0
+ {% endfor %}
+ address-family ipv4
+   {% for nei in bgp_ipv4_peers %}
+   neighbor {{ nei.peer_ip }} activate
+   {% endfor %}
+   network {{ infra_ipif }}
+ !
+ address-family evpn
+   {% for nei in bgp_evpn_peers %}
+   neighbor {{ nei.peer_infra_lo }} activate
+   neighbor {{ nei.peer_infra_lo }} next-hop-unchanged
+   {% endfor %}
+ !
 {% endblock %}

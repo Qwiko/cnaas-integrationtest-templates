@@ -7,4 +7,4 @@ ACCESS:
 DIST:
     entrypoint: dist.j2
     dependencies:
-        - managed-full.j2
+        - managed-full-vrf.j2
