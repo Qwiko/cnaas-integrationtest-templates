@@ -22,6 +22,7 @@ interface Port-channel {{ intf.indexnum }}
 {% for mgmtdom in mgmtdomains %}
 vlan {{ mgmtdom.vlan }}
 interface Vlan{{ mgmtdom.vlan }}
+ vrf forwarding MGMT
  ip address {{ mgmtdom.ipv4_gw }}
 {% endfor %}
 interface Vlan1
