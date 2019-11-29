@@ -6,10 +6,11 @@ management api http-commands
 username admin privilege 15 role network-admin secret sha512 $6$NfD5eWiya9A.EgJF$qaW2.KvCz9oW0daVPqxQrUN5UYb4NN7URw42DMHqtHi7OSZ3eQGQBBvkYH.ZzO3wb2TAqGFBIZAVSRmvxeEvF1
 {% block interfaces %}
 {% endblock %}
-{% block management %}
-{% endblock %}
+vlan {{ mgmt_vlan_id }}
+interface vlan {{ mgmt_vlan_id }}
+ no shutdown
+ ip address {{ mgmt_ip }}
+ip route 0.0.0.0 0.0.0.0 {{ mgmt_gw }}
 {% for ntp_server in ntp_servers %}
 ntp server {{ ntp_server.host }}
 {% endfor %}
-{% block routing %}
-{% endblock %}
