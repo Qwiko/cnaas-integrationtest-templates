@@ -9,7 +9,7 @@ username admin privilege 15 role network-admin secret sha512 $6$NfD5eWiya9A.EgJF
 vlan {{ mgmt_vlan_id }}
 interface vlan {{ mgmt_vlan_id }}
  no shutdown
- ip address {{ mgmt_ip }}
+ ip address {{ mgmt_ipif }}
 ip route 0.0.0.0 0.0.0.0 {{ mgmt_gw }}
 {% for ntp_server in ntp_servers %}
 ntp server {{ ntp_server.host }}
