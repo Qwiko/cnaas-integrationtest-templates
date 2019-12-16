@@ -1,5 +1,10 @@
 {% extends "managed-full-vrf.j2" %}
 {% block interfaces %}
+ip routing
+ip routing vrf MGMT
+{% for vrf in vrfs %}
+vrf instance {{ vrf.name }}
+{% endfor %}
 {% for intf in interfaces %}
 interface {{ intf.name }}
 {% if intf.ifclass == 'downlink' %}
@@ -22,24 +27,55 @@ interface Port-channel {{ intf.indexnum }}
 {% for mgmtdom in mgmtdomains %}
 vlan {{ mgmtdom.vlan }}
 interface Vlan{{ mgmtdom.vlan }}
- vrf forwarding MGMT
+ vrf MGMT
  ip address {{ mgmtdom.ipv4_gw }}
 {% endfor %}
 interface Vlan1
  description ZTP DHCP
- vrf forwarding MGMT
+ vrf MGMT
  ip address 192.168.0.1/24
  ip helper-address 10.100.2.2
  no shutdown
 {% endblock %}
 {% block routing %}
 service routing protocols model multi-agent
-ip routing
-ip routing vrf MGMT
 {% for vrf in vrfs %}
-vrf definition {{ vrf.name }}
 ip routing vrf {{ vrf.name }}
+ipv6 unicast-routing vrf {{ vrf.name }}
 {% endfor %}
+{% if (extroute_static is defined) and extroute_static %}
+ {% for vrf in extroute_static.vrfs %}
+  {% for ipv4_route in vrf.ipv4 %}
+   {% if (ipv4_route.interface is defined) and ipv4_route.interface %}
+ip route vrf {{ vrf.name }} {{ ipv4_route.destination }} {{ipv4_route.interface }} {{ ipv4_route.nexthop }} name {{ ipv4_route.name }} {{ ipv4_route.cli_append_str }}
+   {% else %}
+ip route vrf {{ vrf.name }} {{ ipv4_route.destination }} {{ ipv4_route.nexthop }} name {{ ipv4_route.name }} {{ ipv4_route.cli_append_str }}
+   {% endif %}
+  {% endfor %}
+  {% for ipv6_route in vrf.ipv6 %}
+   {% if (ipv6_route.interface is defined) and ipv6_route.interface %}
+ipv6 route vrf {{ vrf.name }} {{ ipv6_route.destination }} {{ ipv6_route.interface }} {{ ipv6_route.nexthop }} name {{ ipv6_route.name }} {{ ipv6_route.cli_append_str }}
+   {% else %}
+ipv6 route vrf {{ vrf.name }} {{ ipv6_route.destination }} {{ ipv6_route.nexthop }} name {{ ipv6_route.name }} {{ ipv6_route.cli_append_str }}
+   {% endif %}
+  {% endfor %}
+ {% endfor %}
+{% endif %}
+{% if (extroute_ospfv3 is defined) and extroute_ospfv3 %}
+ {% for vrf in extroute_ospfv3.vrfs %}
+router ospfv3 vrf {{ vrf.name }}
+ router-id {{ infra_ip }}
+ passive-interface default
+ address-family ipv4
+  {% if (vrf.ipv4_redist_routefilter is defined) and vrf.ipv4_redist_routefilter %}
+  redistribute bgp route-map {{ vrf.ipv4_redist_routefilter }}
+  {% endif %}
+ address-family ipv6
+  {% if (vrf.ipv6_redist_routefilter is defined) and vrf.ipv6_redist_routefilter %}
+  redistribute bgp route-map {{ vrf.ipv6_redist_routefilter }}
+  {% endif %}
+ {% endfor %}
+{% endif %}
 router bgp {{ asn }}
  router-id {{ infra_ip }}
  no bgp default ipv4-unicast
