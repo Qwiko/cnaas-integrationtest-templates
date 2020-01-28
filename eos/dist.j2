@@ -8,7 +8,13 @@ vrf instance {{ vrf.name }}
 {% for intf in interfaces %}
 interface {{ intf.name }}
 {% if intf.ifclass == 'downlink' %}
+ {% if (intf.data is defined) and intf.data %}
+  {% if (intf.data.description is defined) and intf.data.description %}
+ description {{ intf.data.description }}
+  {% else %}
  description DOWNLINK
+  {% endif %}
+ {% endif %}
  switchport
  switchport mode trunk
  channel-group {{ intf.indexnum }} mode active
