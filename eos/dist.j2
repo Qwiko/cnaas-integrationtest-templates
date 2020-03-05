@@ -132,4 +132,28 @@ router bgp {{ asn }}
    neighbor {{ nei.peer_infra_lo }} next-hop-unchanged
    {% endfor %}
  !
+ {% for vrf in vrfs %}
+ vrf {{ vrf.name }}
+   rd {{ infra_ip }}:{{ vrf.vrf_id }}
+   route-target export evpn 1:{{ vrf.vrf_id }}
+   route-target import evpn 1:{{ vrf.vrf_id }}
+   redistribute connected
+   redistribute static
+   redistribute ospf
+   redistribute ospf match external
+   {% if (extroute_bgp is defined) and extroute_bgp %}
+    {% if (extroute_bgp.vrfs | selectattr("name", "equalto", vrf.name) | list | length) == 1 %}
+     {% set bgp_vrf = extroute_bgp.vrfs | selectattr("name", "equalto", vrf.name) | first %}
+     local-as {{ bgp_vrf.local_as }}
+     {% for nei in bgp_vrf.neighbor_v4 %}
+      neighbor {{ nei.peer_ipv4 }} remote-as {{ nei.peer_as }}
+      neighbor {{ nei.peer_ipv4 }} route-map {{ nei.route_map_in }} in
+      neighbor {{ nei.peer_ipv4 }} route-map {{ nei.route_map_out }} out
+      neighbor {{ nei.peer_ipv4 }} maximum-routes 10000
+      address-family ipv4
+        neighbor {{ nei.peer_ipv4 }} activate
+     {% endfor %}
+    {% endif %}
+   {% endif %}
+ {% endfor %}
 {% endblock %}
