@@ -40,21 +40,20 @@ interface {{ intf.name }}
  switchport
  switchport mode access
  switchport access vlan {{ fail.vlan }}
- storm-control broadcast level 7
  spanning-tree bpduguard enable
  spanning-tree portfast edge
- dot1x pae authenticator
- dot1x authentication failure action traffic allow vlan {{ fail.vlan }}
- dot1x port-control auto
+ !dot1x pae authenticator
+ !dot1x authentication failure action traffic allow vlan {{ fail.vlan }}
+ !dot1x port-control auto
  ! dot1x host-mode single-host
  ! dot1x eapol disabled
- dot1x mac based authentication
+ !dot1x mac based authentication
 
 {# -- ACCESS UNTAGGED -- #}
 {% elif intf.ifclass == 'ACCESS_UNTAGGED' %}
  switchport
  switchport mode access
- storm-control broadcast level 7
+ !storm-control broadcast level 7
  spanning-tree bpduguard enable
  spanning-tree portfast edge
  {% if (intf.untagged_vlan is defined) and intf.untagged_vlan %}
