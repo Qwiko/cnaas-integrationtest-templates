@@ -40,7 +40,7 @@ interface {{ intf.name }}
  switchport
  switchport mode access
  switchport access vlan {{ fail.vlan }}
- spanning-tree bpduguard enable
+ !spanning-tree bpduguard enable
  spanning-tree portfast edge
  !dot1x pae authenticator
  !dot1x authentication failure action traffic allow vlan {{ fail.vlan }}
@@ -54,7 +54,7 @@ interface {{ intf.name }}
  switchport
  switchport mode access
  !storm-control broadcast level 7
- spanning-tree bpduguard enable
+ !spanning-tree bpduguard enable
  spanning-tree portfast edge
  {% if (intf.untagged_vlan is defined) and intf.untagged_vlan %}
  switchport access vlan {{ intf.untagged_vlan }}
