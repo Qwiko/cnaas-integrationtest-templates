@@ -43,8 +43,3 @@ router ospfv3 vrf {{ vrf.name }}
   {% endif %}
  {% endfor %}
 {% endif %}
-{% for vrf in vrfs %}
- vrf {{ vrf.name }}
-  ipv4
-   routing
-{% endfor %}
