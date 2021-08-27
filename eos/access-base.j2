@@ -32,8 +32,6 @@ ip route 0.0.0.0 0.0.0.0 {{ mgmt_gw }}
 ntp server {{ ntp_server.host }}
 {% endfor %}
 !
-queue-monitor length
-!
 {% for syslog_server in syslog_servers %}
 logging host {{ syslog_server.host }} 1514
 {% endfor %}
