@@ -1,0 +1,58 @@
+vrf instance MGMT
+!
+management security
+ ssl profile cnaas
+  certificate cnaasnms.crt key cnaasnms.key
+!
+management api http-commands
+ protocol https ssl profile cnaas
+ no shutdown
+ vrf MGMT
+  no shutdown
+!
+management api gnmi
+ transport grpc def
+  no shutdown
+  ssl profile cnaas
+  vrf MGMT
+!
+errdisable recovery cause bpduguard
+errdisable recovery cause hitless-reload-down
+errdisable recovery cause lacp-rate-limit
+errdisable recovery cause link-flap
+errdisable recovery cause no-internal-vlan
+errdisable recovery cause portchannelguard
+errdisable recovery cause portsec
+errdisable recovery cause speed-misconfigured
+errdisable recovery cause uplink-failure-detection
+errdisable recovery cause xcvr-misconfigured
+errdisable recovery cause xcvr-overheat
+errdisable recovery cause xcvr-power-unsupported
+errdisable recovery cause xcvr-unsupported
+!
+spanning-tree mode mstp
+!
+ip routing
+ip routing vrf MGMT
+!
+ip virtual-router mac-address aaaa.aaaa.aaaa
+!
+service routing protocols model multi-agent
+!
+snmp-server community public ro
+snmp-server vrf MGMT
+!
+{% for ntp_server in ntp_servers %}
+ntp server vrf MGMT {{ ntp_server.host }}
+{% endfor %}
+!
+{% set dns_servers_cli = dns_servers|map(attribute="host")|join(' ') %}
+{% if dns_servers_cli %}
+ip name-server vrf MGMT {{ dns_servers_cli }}
+{% endif %}
+!
+queue-monitor length
+!
+{% for syslog_server in syslog_servers %}
+logging vrf MGMT host {{ syslog_server.host }} 1514
+{% endfor %}
