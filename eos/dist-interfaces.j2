@@ -77,7 +77,6 @@ interface Vlan{{ vxlan_data.vlan_id }}
  {% if vxlan_data.ipv6_gw is defined and vxlan_data.ipv6_gw %}
  ipv6 address virtual {{ vxlan_data.ipv6_gw }}
  {% endif %}
- ip igmp
  arp aging timeout 180
    {% if (vxlan_data.dhcp_relays is defined) and vxlan_data.dhcp_relays is sequence %}
     {% for dhcp_relay in vxlan_data.dhcp_relays %}
@@ -93,10 +92,6 @@ interface Vlan{{ vxlan_data.vlan_id }}
    {% endif %}
 !
   {% else %}
-   {% if (vxlan_data.querier_address is defined) and vxlan_data.querier_address %}
-ip igmp snooping vlan {{ vxlan_data.vlan_id }} querier
-ip igmp snooping vlan {{ vxlan_data.vlan_id }} querier address {{ vxlan_data.querier_address }}
-   {% endif %}
   {% endif %}
  {% endfor %}
 !

@@ -34,7 +34,6 @@ router bgp {{ asn }}
   rd {{ infra_ip }}:{{ vxlan_data.vlan_id }}
   route-target both 1:{{ vxlan_data.vlan_id }}
   redistribute learned
-  redistribute igmp
   {% endfor %}
 !
   {% for mgmtdom in mgmtdomains %}
