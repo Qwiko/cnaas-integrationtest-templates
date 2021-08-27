@@ -47,7 +47,6 @@ router bgp {{ asn }}
   {% for vrf in vrfs %}
   vrf {{ vrf.name }}
   rd {{ infra_ip }}:{{ vrf.vrf_id }}
-  evpn multicast
   route-target export evpn 2:{{ vrf.vrf_id }}
   route-target import evpn 2:{{ vrf.vrf_id }}
   redistribute connected

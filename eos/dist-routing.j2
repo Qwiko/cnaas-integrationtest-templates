@@ -43,10 +43,6 @@ router ospfv3 vrf {{ vrf.name }}
   {% endif %}
  {% endfor %}
 {% endif %}
-router multicast
- ipv4
-  routing
-  software-forwarding sfe
 {% for vrf in vrfs %}
  vrf {{ vrf.name }}
   ipv4
