@@ -52,7 +52,7 @@ router bgp {{ asn }}
   route-target export evpn {{ export_route_target }}
   {% endfor %}
   {% for import_route_target in vrf.import_route_targets %}
-  route-target export evpn {{ import_route_target }}
+  route-target import evpn {{ import_route_target }}
   {% endfor %}
   {% if (vrf.export_policy is defined) and vrf.export_policy %}
   route-target export evpn route-map {{ vrf.export_policy }}
