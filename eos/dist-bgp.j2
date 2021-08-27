@@ -48,6 +48,18 @@ router bgp {{ asn }}
   rd {{ infra_ip }}:{{ vrf.vrf_id }}
   route-target export evpn 2:{{ vrf.vrf_id }}
   route-target import evpn 2:{{ vrf.vrf_id }}
+  {% for export_route_target in vrf.export_route_targets %}
+  route-target export evpn {{ export_route_target }}
+  {% endfor %}
+  {% for import_route_target in vrf.import_route_targets %}
+  route-target export evpn {{ import_route_target }}
+  {% endfor %}
+  {% if (vrf.export_policy is defined) and vrf.export_policy %}
+  route-target export evpn route-map {{ vrf.export_policy }}
+  {% endif %}
+  {% if (vrf.import_policy is defined) and vrf.import_policy %}
+  route-target import evpn route-map {{ vrf.import_policy }}
+  {% endif %}
   redistribute connected
   redistribute static
 
