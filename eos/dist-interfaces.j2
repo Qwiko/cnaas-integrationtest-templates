@@ -14,7 +14,7 @@ interface Vlan{{ mgmtdom.vlan }}
  arp aging timeout 180
 {% endfor %}
 !
-{% for intf in interfaces %}
+{% for intf in interfaces if not intf.name == "Ethernet20" %}
 interface {{ intf.name }}
 {% if intf.ifclass == 'downlink' %}
  {% if (intf.data is defined) and intf.data %}
