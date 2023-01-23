@@ -1,11 +1,6 @@
 vrf instance MGMT
 !
-management security
- ssl profile cnaas
-  certificate cnaasnms.crt key cnaasnms.key
-!
 management api http-commands
- protocol https ssl profile cnaas
  no shutdown
  vrf MGMT
   no shutdown
@@ -13,7 +8,6 @@ management api http-commands
 management api gnmi
  transport grpc def
   no shutdown
-  ssl profile cnaas
   vrf MGMT
 !
 errdisable recovery cause bpduguard
