@@ -5,11 +5,6 @@ management api http-commands
  vrf MGMT
   no shutdown
 !
-management api gnmi
- transport grpc def
-  no shutdown
-  vrf MGMT
-!
 errdisable recovery cause bpduguard
 errdisable recovery cause hitless-reload-down
 errdisable recovery cause lacp-rate-limit
