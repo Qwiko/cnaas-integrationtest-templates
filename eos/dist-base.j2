@@ -1,7 +1,7 @@
 {% if device_os_version[:4]|float >= 4.25 %}
 spanning-tree root super
-{% endif %}
 !
+{% endif %}
 maintenance
    profile unit boot
       on-boot duration 360
