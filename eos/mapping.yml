@@ -19,6 +19,8 @@ DIST:
         - dist-interfaces.j2
         - dist-bgp.j2
         - dist-routing.j2
+    unmanaged_config_sections:
+        - "^(interface Management1)"
 CORE:
     entrypoint: core.j2
     dependencies:
